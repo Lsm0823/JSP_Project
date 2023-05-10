@@ -1,0 +1,335 @@
+-- bigmoim.admin definition
+
+CREATE TABLE `admin` (
+  `adminId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '관리자아이디',
+  `adminPw` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '관리자비밀번호',
+  `adminName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '관리자이름',
+  `adminTel` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '관리자전화번호',
+  PRIMARY KEY (`adminId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.boardcomment definition
+
+CREATE TABLE `boardcomment` (
+  `bcNum` int NOT NULL AUTO_INCREMENT,
+  `bcContent` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `memberId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `bcDate` date NOT NULL,
+  `mbNum` int NOT NULL,
+  PRIMARY KEY (`bcNum`),
+  KEY `bcomment_FK_1` (`memberId`),
+  KEY `bcomment_FK` (`mbNum`),
+  CONSTRAINT `bcomment_FK` FOREIGN KEY (`mbNum`) REFERENCES `memberboard` (`mbNum`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `bcomment_FK_1` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.business definition
+
+CREATE TABLE `business` (
+  `businessNum` int NOT NULL AUTO_INCREMENT,
+  `businessName` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`businessNum`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.class definition
+
+CREATE TABLE `class` (
+  `classNum` int NOT NULL AUTO_INCREMENT COMMENT '클래스인덱스',
+  `className` varchar(100) NOT NULL,
+  `classArea` varchar(100) NOT NULL,
+  `classPrice` varchar(100) NOT NULL,
+  `classTime` varchar(100) NOT NULL,
+  `classContent` varchar(2000) NOT NULL,
+  `classLike` int DEFAULT '0',
+  `memberId` varchar(50) DEFAULT NULL,
+  `classHCount` int DEFAULT NULL,
+  `classNCount` int DEFAULT NULL,
+  `classKakao` varchar(500) DEFAULT NULL,
+  `categoryNum` int NOT NULL,
+  `classOpenDate` date NOT NULL,
+  `businessNum` int DEFAULT NULL,
+  `taskNum` int DEFAULT NULL,
+  `themeNum` int DEFAULT NULL,
+  PRIMARY KEY (`classNum`),
+  KEY `class_FK` (`memberId`),
+  KEY `class_FK_1` (`categoryNum`),
+  KEY `class_FK_2` (`taskNum`),
+  KEY `class_FK_3` (`businessNum`),
+  KEY `class_FK_4` (`themeNum`),
+  CONSTRAINT `class_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `class_FK_1` FOREIGN KEY (`categoryNum`) REFERENCES `moimcategory` (`categoryNum`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `class_FK_2` FOREIGN KEY (`taskNum`) REFERENCES `task` (`taskNum`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `class_FK_3` FOREIGN KEY (`businessNum`) REFERENCES `business` (`businessNum`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `class_FK_4` FOREIGN KEY (`themeNum`) REFERENCES `theme` (`themeNum`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.classcomment definition
+
+CREATE TABLE `classcomment` (
+  `ccNum` int NOT NULL AUTO_INCREMENT,
+  `ccContent` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ccDate` date NOT NULL,
+  `memberId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `classNum` int NOT NULL,
+  PRIMARY KEY (`ccNum`),
+  KEY `classcomment_FK_1` (`classNum`),
+  KEY `classcomment_FK` (`memberId`),
+  CONSTRAINT `classcomment_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `classcomment_FK_1` FOREIGN KEY (`classNum`) REFERENCES `class` (`classNum`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.classmoim definition
+
+CREATE TABLE `classmoim` (
+  `classNum` int NOT NULL COMMENT '클래스모임번호',
+  `className` varchar(100) NOT NULL COMMENT '클래스이름',
+  `classArea` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '클래스모임 장소',
+  `classPrice` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `classTime` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `classContent` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `classLike` int DEFAULT NULL,
+  `memberId` varchar(50) NOT NULL,
+  `classHCount` int DEFAULT NULL,
+  `classNCount` int DEFAULT NULL,
+  `classKakao` varchar(500) DEFAULT NULL,
+  `categoryNum` int NOT NULL,
+  `classOpenDate` date NOT NULL,
+  `businessNum` int NOT NULL,
+  `taskNum` int NOT NULL,
+  `themeNum` int NOT NULL,
+  `classImg` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  PRIMARY KEY (`classNum`),
+  KEY `classmoim_FK` (`memberId`),
+  KEY `classmoim_FK_1` (`categoryNum`),
+  KEY `classmoim_FK_2` (`businessNum`),
+  KEY `classmoim_FK_3` (`taskNum`),
+  KEY `classmoim_FK_4` (`themeNum`),
+  CONSTRAINT `classmoim_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `classmoim_FK_1` FOREIGN KEY (`categoryNum`) REFERENCES `moimcategory` (`categoryNum`) ON UPDATE CASCADE,
+  CONSTRAINT `classmoim_FK_2` FOREIGN KEY (`businessNum`) REFERENCES `business` (`businessNum`) ON UPDATE CASCADE,
+  CONSTRAINT `classmoim_FK_3` FOREIGN KEY (`taskNum`) REFERENCES `task` (`taskNum`) ON UPDATE CASCADE,
+  CONSTRAINT `classmoim_FK_4` FOREIGN KEY (`themeNum`) REFERENCES `theme` (`themeNum`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.jjimlist definition
+
+CREATE TABLE `jjimlist` (
+  `jjimNum` int NOT NULL AUTO_INCREMENT,
+  `memberId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `moimNum` int DEFAULT NULL,
+  `classNum` int DEFAULT NULL,
+  PRIMARY KEY (`jjimNum`),
+  KEY `jjimlist_FK_1` (`classNum`),
+  KEY `jjimlist_FK_2` (`memberId`),
+  KEY `jjimlist_FK` (`moimNum`),
+  CONSTRAINT `jjimlist_FK` FOREIGN KEY (`moimNum`) REFERENCES `moim` (`moimNum`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `jjimlist_FK_1` FOREIGN KEY (`classNum`) REFERENCES `class` (`classNum`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `jjimlist_FK_2` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.`member` definition
+
+CREATE TABLE `member` (
+  `memberId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '회원아이디',
+  `memberPw` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '회원비밀번호',
+  `memberName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '회원이름',
+  `memberTel` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '회원전화번호',
+  `memberBirth` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '회원생년월일',
+  `memberImg` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '회원프로필사진',
+  `memberProfile` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '회원직업',
+  `memberSex` int NOT NULL COMMENT '1남자 2여자',
+  `memberAddr` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '회원주소',
+  `memberJobAddr` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '회원직장주소',
+  `memberLikeArea` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '회원관심지역',
+  `categoryNum` int DEFAULT NULL COMMENT '카테고리랑같음',
+  `businessNum` int DEFAULT NULL,
+  `taskNum` int DEFAULT NULL,
+  `themeNum` int DEFAULT NULL,
+  PRIMARY KEY (`memberId`),
+  KEY `member_FK` (`categoryNum`),
+  KEY `member_FK_1` (`businessNum`),
+  KEY `member_FK_2` (`taskNum`),
+  KEY `member_FK_3` (`themeNum`),
+  CONSTRAINT `member_FK` FOREIGN KEY (`categoryNum`) REFERENCES `moimcategory` (`categoryNum`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `member_FK_1` FOREIGN KEY (`businessNum`) REFERENCES `business` (`businessNum`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `member_FK_2` FOREIGN KEY (`taskNum`) REFERENCES `task` (`taskNum`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `member_FK_3` FOREIGN KEY (`themeNum`) REFERENCES `theme` (`themeNum`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.memberboard definition
+
+CREATE TABLE `memberboard` (
+  `mbNum` int NOT NULL AUTO_INCREMENT COMMENT '회원게시글 번호',
+  `mbTitle` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '회원게시글 제목',
+  `mbContent` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '회원게시글 내용',
+  `mbDate` date NOT NULL COMMENT '회원게시글 작성일자',
+  `memberId` varchar(50) NOT NULL COMMENT '게시글작성 회원',
+  `mbImg` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '게시글 이미지',
+  `moimNum` int NOT NULL,
+  `boardType` varchar(100) NOT NULL,
+  PRIMARY KEY (`mbNum`),
+  KEY `memberboard_FK` (`memberId`),
+  KEY `memberboard_FK_1` (`moimNum`),
+  CONSTRAINT `memberboard_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `memberboard_FK_1` FOREIGN KEY (`moimNum`) REFERENCES `moim` (`moimNum`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.moim definition
+
+CREATE TABLE `moim` (
+  `moimNum` int NOT NULL AUTO_INCREMENT COMMENT '모임번호',
+  `moimName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '모임이름',
+  `moimArea` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '모임 주활동지역',
+  `moimHCount` int DEFAULT NULL COMMENT '모임 전체 정원',
+  `moimNCount` int DEFAULT NULL COMMENT '모임 현재 인원',
+  `memberId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '모임회원아이디',
+  `moimKakao` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '모임 카카오톡 링크',
+  `categoryNum` int NOT NULL COMMENT '모임 카테고리 번호',
+  `moimImg` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '모임 사진모음',
+  `moimProfile` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '모임 소개 내용',
+  `moimDate` date NOT NULL COMMENT '모임개설일자',
+  `themeNum` int DEFAULT NULL COMMENT '테마',
+  `taskNum` int DEFAULT NULL COMMENT '직무',
+  `businessNum` int DEFAULT NULL COMMENT '업종',
+  PRIMARY KEY (`moimNum`),
+  KEY `moim_FK` (`memberId`),
+  KEY `moim_FK_3` (`businessNum`),
+  KEY `moim_FK_1` (`categoryNum`),
+  KEY `moim_FK_2` (`taskNum`),
+  KEY `moim_FK_4` (`themeNum`),
+  CONSTRAINT `moim_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `moim_FK_1` FOREIGN KEY (`categoryNum`) REFERENCES `moimcategory` (`categoryNum`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `moim_FK_2` FOREIGN KEY (`taskNum`) REFERENCES `task` (`taskNum`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `moim_FK_3` FOREIGN KEY (`businessNum`) REFERENCES `business` (`businessNum`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `moim_FK_4` FOREIGN KEY (`themeNum`) REFERENCES `theme` (`themeNum`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.moimcategory definition
+
+CREATE TABLE `moimcategory` (
+  `categoryNum` int NOT NULL AUTO_INCREMENT COMMENT '카테고리번호',
+  `categoryName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '카테고리 명',
+  PRIMARY KEY (`categoryNum`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.moimjoin definition
+
+CREATE TABLE `moimjoin` (
+  `mjNum` int NOT NULL AUTO_INCREMENT COMMENT '모임가입번호',
+  `moimNum` int NOT NULL,
+  `memberId` varchar(50) NOT NULL,
+  `mjCheck` int NOT NULL COMMENT '0=승인전, 1=승인후',
+  `mjDate` date NOT NULL COMMENT '신청일자',
+  `mjContent` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`mjNum`),
+  KEY `moimjoin_FK` (`moimNum`),
+  KEY `moimjoin_FK_1` (`memberId`),
+  CONSTRAINT `moimjoin_FK` FOREIGN KEY (`moimNum`) REFERENCES `moim` (`moimNum`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `moimjoin_FK_1` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.moimmember definition
+
+CREATE TABLE `moimmember` (
+  `mmNum` int NOT NULL AUTO_INCREMENT,
+  `memberId` varchar(50) NOT NULL,
+  `moimNum` int NOT NULL,
+  PRIMARY KEY (`mmNum`),
+  KEY `moimmember_FK` (`memberId`),
+  KEY `moimmember_FK_1` (`moimNum`),
+  CONSTRAINT `moimmember_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `moimmember_FK_1` FOREIGN KEY (`moimNum`) REFERENCES `moim` (`moimNum`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.moimphotos definition
+
+CREATE TABLE `moimphotos` (
+  `photoNum` int NOT NULL AUTO_INCREMENT COMMENT '사진첩 번호',
+  `moimNum` int NOT NULL COMMENT '모임 번호',
+  `photo` varchar(100) NOT NULL,
+  `upDate` date NOT NULL,
+  `memberId` varchar(50) NOT NULL,
+  PRIMARY KEY (`photoNum`),
+  KEY `moimPhotos_FK` (`moimNum`),
+  KEY `moimphotos_FK1` (`memberId`),
+  CONSTRAINT `moimPhotos_FK` FOREIGN KEY (`moimNum`) REFERENCES `moim` (`moimNum`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `moimphotos_FK1` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.moimschedule definition
+
+CREATE TABLE `moimschedule` (
+  `msNum` int NOT NULL AUTO_INCREMENT,
+  `msTime` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `msArea` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `moimNum` int NOT NULL,
+  `msHCount` int NOT NULL,
+  `memberId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `msNCount` int NOT NULL COMMENT '일정참여인원',
+  `msTitle` varchar(100) NOT NULL COMMENT '모임제목',
+  `msContent` varchar(1000) NOT NULL COMMENT '일정내용',
+  PRIMARY KEY (`msNum`),
+  KEY `moimschedule_FK_1` (`moimNum`),
+  KEY `moimschedule_FK` (`memberId`),
+  CONSTRAINT `moimschedule_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `moimschedule_FK_1` FOREIGN KEY (`moimNum`) REFERENCES `moim` (`moimNum`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.recentseen definition
+
+CREATE TABLE `recentseen` (
+  `resentseenNum` int NOT NULL AUTO_INCREMENT,
+  `memberId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `moimNum` int NOT NULL,
+  `classNum` int NOT NULL,
+  PRIMARY KEY (`resentseenNum`),
+  KEY `recentseen_FK` (`memberId`),
+  KEY `recentseen_FK_1` (`classNum`),
+  KEY `recentseen_FK_2` (`moimNum`),
+  CONSTRAINT `recentseen_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`),
+  CONSTRAINT `recentseen_FK_1` FOREIGN KEY (`classNum`) REFERENCES `class` (`classNum`),
+  CONSTRAINT `recentseen_FK_2` FOREIGN KEY (`moimNum`) REFERENCES `moim` (`moimNum`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.schedulejoin definition
+
+CREATE TABLE `schedulejoin` (
+  `sjNum` int NOT NULL AUTO_INCREMENT,
+  `msNum` int NOT NULL,
+  `memberId` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `moimNum` int NOT NULL COMMENT '모임번호',
+  PRIMARY KEY (`sjNum`),
+  KEY `schedulejoin_FK` (`memberId`),
+  KEY `schedulejoin_FK_1` (`msNum`),
+  KEY `schedulejoin_FK_2` (`moimNum`),
+  CONSTRAINT `schedulejoin_FK` FOREIGN KEY (`memberId`) REFERENCES `member` (`memberId`),
+  CONSTRAINT `schedulejoin_FK_1` FOREIGN KEY (`msNum`) REFERENCES `moimschedule` (`msNum`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `schedulejoin_FK_2` FOREIGN KEY (`moimNum`) REFERENCES `moim` (`moimNum`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.task definition
+
+CREATE TABLE `task` (
+  `taskNum` int NOT NULL AUTO_INCREMENT,
+  `taskName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  PRIMARY KEY (`taskNum`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.theme definition
+
+CREATE TABLE `theme` (
+  `themeNum` int NOT NULL AUTO_INCREMENT,
+  `themName` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`themeNum`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- bigmoim.zipcode definition
+
+CREATE TABLE `zipcode` (
+  `zipcodeNum` varchar(10) NOT NULL,
+  `area1` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `area2` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `area3` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `area4` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`zipcodeNum`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
